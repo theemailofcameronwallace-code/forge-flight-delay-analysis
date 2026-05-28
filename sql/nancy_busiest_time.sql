@@ -1,5 +1,5 @@
 Create DATABASE project2;
-USE archive;
+USE project2;
 
 SELECT 
 	CASE DAY_OF_WEEK
@@ -12,13 +12,13 @@ SELECT
 	WHEN 7 THEN 'Saturday'
     END 
     AS 'day of week', 
-    COUNT(DAY_OF_WEEK) AS 'TotalFlights'
+    COUNT(*) AS TotalFlights
 FROM flights
 GROUP BY DAY_OF_WEEK
-ORDER BY 'TotalFlights' DESC;
+ORDER BY DAY_OF_WEEK;
 
 SELECT 
-	CASE MONTH
+	CASE flights.MONTH
 	WHEN 1 THEN 'January'
 	WHEN 2 THEN 'February'
 	WHEN 3 THEN 'March'
@@ -31,10 +31,10 @@ SELECT
 	WHEN 10 THEN 'October'
 	WHEN 11 THEN 'November'
 	WHEN 12 THEN 'December'
-    END AS 'Month', COUNT(MONTH) AS 'TotalFlights'
+    END AS 'Month', COUNT(*) AS TotalFlights
 FROM flights
-GROUP BY Month
-ORDER BY 'TotalFlights' DESC;
+GROUP BY flights.MONTH
+ORDER BY flights.MONTH;
 
 
 SELECT flights.AIRLINE AS Airline, airlines.AIRLINE AS ID, COUNT(flights.AIRLINE) AS 'TotalFlights'
@@ -42,5 +42,5 @@ FROM flights
 JOIN airlines
 ON 
 	flights.AIRLINE = airlines.IATA_CODE
-GROUP BY flights.AIRLINE
-ORDER  BY flights.AIRLINE;
+GROUP BY flights.AIRLINE, airlines.AIRLINE
+ORDER  BY TotalFlights DESC ;
