@@ -1,6 +1,6 @@
 ## Busiest Flight Times - SQL Findings
 
-# Which day of the week and/or time of the year has the busiest flight days?
+Which day of the week and/or time of the year has the busiest flight days?
 
 
 # Busiest Months
