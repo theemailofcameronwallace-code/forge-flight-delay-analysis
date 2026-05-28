@@ -4,7 +4,6 @@ import streamlit as st
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 
-
 predictor = pd.read_csv("Delay_predictor.csv")
 
 predictor["Delayed"] = (predictor["ARRIVAL_DELAY"] > 5).astype(int)
@@ -20,82 +19,83 @@ X_train, X_test, y_train, y_test = train_test_split(x, y, test_size = 0.2, rando
 model = RandomForestClassifier(random_state=42)
 model.fit(X_train, y_train)
 
+def show_predictor():
+    st.title("Flight Delay Predictor")
+    st.write("Can we predict future delays?")
 
-st.title("Flight Delay Predictor")
-st.write("Can we predict future delays?")
+    month = st.selectbox(
+        "Select Month",
+        [
+            "January", "February", "March", "April",
+            "May", "June", "July", "August",
+            "September", "October", "November", "December"
+        ]
+        
+    )
 
-month = st.selectbox(
-    "Select Month",
-    [
-        "January", "February", "March", "April",
-        "May", "June", "July", "August",
-        "September", "October", "November", "December"
-    ]
-)
+    month_map = {
+        "January": 1,
+        "February": 2,
+        "March": 3,
+        "April": 4,
+        "May": 5,
+        "June": 6,
+        "July": 7,
+        "August": 8,
+        "September": 9,
+        "October": 10,
+        "November": 11,
+        "December": 12
+    }
+    month_num = month_map[month]
 
-month_map = {
-    "January": 1,
-    "February": 2,
-    "March": 3,
-    "April": 4,
-    "May": 5,
-    "June": 6,
-    "July": 7,
-    "August": 8,
-    "September": 9,
-    "October": 10,
-    "November": 11,
-    "December": 12
-}
-month_num = month_map[month]
+    day_of_week = st.selectbox(
+        "Select Day of Week",
+        [
+           "Sunday", "Monday", "Tuesday",
+           "Wednesday", "Thursday",
+           "Friday", "Saturday"
+        ]
+    )
 
-day_of_week = st.selectbox(
-    "Select Day of Week",
-    [
-        "Sunday", "Monday", "Tuesday",
-        "Wednesday", "Thursday",
-        "Friday", "Saturday"
-    ]
-)
+    day_map = {
+        "Sunday": 1,
+        "Monday": 2,
+        "Tuesday": 3,
+        "Wednesday": 4,
+        "Thursday": 5,
+        "Friday": 6,
+        "Saturday": 7
+    }   
 
-day_map = {
-    "Sunday": 1,
-    "Monday": 2,
-    "Tuesday": 3,
-    "Wednesday": 4,
-    "Thursday": 5,
-    "Friday": 6,
-    "Saturday": 7
-}
+    day_num = day_map[day_of_week]
 
-day_num = day_map[day_of_week]
+    departure_delay = st.number_input("Departure Delay", value=0)
+    taxi_out = st.number_input("Taxi Out Time", value=10)
+    distance = st.number_input("Distance", value=500)
 
-departure_delay = st.number_input("Departure Delay", value=0)
-taxi_out = st.number_input("Taxi Out Time", value=10)
-distance = st.number_input("Distance", value=500)
+    airline_options = predictor["AIRLINE"].unique()
 
-airline_options = predictor["AIRLINE"].unique()
+    selected_airline = st.selectbox(
+        "Select Airline", airline_options)
 
-selected_airline = st.selectbox(
-    "Select Airline", airline_options)
+    input_data = pd.DataFrame({
+        "MONTH": [month_num],
+        "DAY_OF_WEEK": [day_num],
+        "DEPARTURE_DELAY": [departure_delay],
+        "TAXI_OUT": [taxi_out],
+        "DISTANCE": [distance]
+    })
 
-input_data = pd.DataFrame({
-    "MONTH": [month_num],
-    "DAY_OF_WEEK": [day_num],
-    "DEPARTURE_DELAY": [departure_delay],
-    "TAXI_OUT": [taxi_out],
-    "DISTANCE": [distance]
-})
-
-input_data[f"AIRLINE_{selected_airline}"] = 1
-input_data = input_data.reindex(columns=x.columns, fill_value=0)
+    input_data[f"AIRLINE_{selected_airline}"] = 1
+    input_data = input_data.reindex(columns=x.columns, fill_value=0)
 
 
-if st.button("Predict Delay"):
-    prediction = model.predict(input_data)[0]
-    prob = model.predict_proba(input_data)[0][1]
+    if st.button("Predict Delay"):
+        prediction = model.predict(input_data)[0]
+        prob = model.predict_proba(input_data)[0][1]
 
-    if prediction ==1:
-        st.error(f"Flight likely delayed({prob:.1%}probability)")
-    else:
-        st.success(f"Flight likely on time ({1-prob:.1%} confidence)")
+        if prediction ==1:
+            st.error(f"Flight likely delayed({prob:.1%}probability)")
+        else:
+            st.success(f"Flight likely on time ({1-prob:.1%} confidence)")
