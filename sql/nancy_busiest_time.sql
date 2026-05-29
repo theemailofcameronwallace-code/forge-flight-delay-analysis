@@ -37,7 +37,9 @@ GROUP BY flights.MONTH
 ORDER BY flights.MONTH;
 
 
-SELECT flights.AIRLINE AS Airline, airlines.AIRLINE AS ID, COUNT(flights.AIRLINE) AS 'TotalFlights'
+SELECT flights.AIRLINE AS Airline, 
+airlines.AIRLINE AS ID, 
+COUNT(flights.AIRLINE) AS 'TotalFlights'
 FROM flights
 JOIN airlines
 ON 

@@ -10,8 +10,9 @@ days_df = pd.read_csv("Busiest_days.csv")
 airlines_df = pd.read_csv("Busiest_airlines.csv")
 
 def show_months():
-    st.title("Flight Frequency per month")
-    st.write("What Months have the most frequent flights?")
+    st.title("Flight Frequency")
+    st. write("Flight Frequency per Month, Day, and Airline")
+    st.subheader("1. What Months have the most frequent flights?")
     
     fig1 = px.line(
         month_df,
@@ -31,7 +32,7 @@ def show_months():
 
 
 
-    st.write("What Days of the week have the most frequent flights?")
+    st.subheader("2. What Days of the week have the most frequent flights?")
     fig2 = px.bar(
         days_df,
         x="day of week",
@@ -58,7 +59,7 @@ def show_months():
     st.plotly_chart(fig2, use_container_width=True)
 
 
-    st.write('Which Airlines have the most flights?')
+    st.subheader('3. Which Airlines have the most flights?')
 
     fig3 = px.bar(
         airlines_df,
